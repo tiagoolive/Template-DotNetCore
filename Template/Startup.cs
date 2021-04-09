@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Template.Application.AutoMapper;
 using Template.Data.Context;
 using Template.IoC;
+using Template.Swagger;
 
 namespace Template
 {
@@ -30,6 +31,7 @@ namespace Template
             NativeInjector.RegistrarServices(services);
 
             services.AddAutoMapper(typeof(AutoMapperSetup));
+            services.AddSwaggerConfiguration();
 
 
             // In production, the Angular files will be served from this directory
@@ -52,6 +54,8 @@ namespace Template
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSwaggerConfiguration();
 
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
