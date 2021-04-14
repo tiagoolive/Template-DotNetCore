@@ -51,7 +51,7 @@ namespace Template.Controllers
         {
             string _userId = TokenService.GetValueFromClaim(HttpContext.User.Identity, ClaimTypes.NameIdentifier);
 
-            return Ok(this.userService.Deleted(_userId));
+            return Ok(this.userService.Delete(_userId));
         }
 
         [HttpPost("authenticate"), AllowAnonymous]
