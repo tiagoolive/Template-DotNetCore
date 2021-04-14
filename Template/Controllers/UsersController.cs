@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Template.Application.Interfaces;
 using Template.Application.ViewModels;
@@ -10,7 +12,7 @@ using Template.Application.ViewModels;
 namespace Template.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
@@ -26,7 +28,7 @@ namespace Template.Controllers
             return Ok(this.userService.Get());
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public IActionResult Post(UserViewModel userViewModel)
         {
             return Ok(this.userService.Post(userViewModel));
@@ -42,6 +44,20 @@ namespace Template.Controllers
         public IActionResult Put(UserViewModel userViewModel)
         {
             return Ok(this.userService.Put(userViewModel));
+        }
+
+        [HttpDelete]
+        public IActionResult Delete()
+        {
+            string _userId = TokenService.GetValueFromClaim(HttpContext.User.Identity, ClaimTypes.NameIdentifier);
+
+            return Ok(this.userService.Deleted(_userId));
+        }
+
+        [HttpPost("authenticate"), AllowAnonymous]
+        public IActionResult Authenticate(UserAuthenticateRequestViewModel userViewModel)
+        {
+            return Ok(this.userService.Authenticate(userViewModel));
         }
     }
 }
