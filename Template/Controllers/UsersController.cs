@@ -22,7 +22,7 @@ namespace Template.Controllers
             this.userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult Get()
         {
             return Ok(this.userService.Get());
@@ -31,6 +31,8 @@ namespace Template.Controllers
         [HttpPost, AllowAnonymous]
         public IActionResult Post(UserViewModel userViewModel)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             return Ok(this.userService.Post(userViewModel));
         }
 
@@ -40,7 +42,7 @@ namespace Template.Controllers
             return Ok(this.userService.GetById(id));
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult Put(UserViewModel userViewModel)
         {
             return Ok(this.userService.Put(userViewModel));

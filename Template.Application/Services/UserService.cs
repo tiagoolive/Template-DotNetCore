@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Template.Application.Interfaces;
 using Template.Application.ViewModels;
 using Template.Domain.Entities;
 using Template.Domain.Interfaces;
+using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace Template.Application.Services
 {
@@ -22,11 +24,9 @@ namespace Template.Application.Services
 
         public List<UserViewModel> Get()
         {
-            List<UserViewModel> _userViewModels = new List<UserViewModel>();
-
             IEnumerable<User> _users = this.userRepository.GetAll();
 
-            _userViewModels = mapper.Map<List<UserViewModel>>(_users);
+            List<UserViewModel> _userViewModels = mapper.Map<List<UserViewModel>>(_users);
 
             //foreach (var item in _users)
             //    _userViewModels.Add(mapper.Map<UserViewModel>(item));
@@ -47,6 +47,8 @@ namespace Template.Application.Services
 
             if (userViewModel.Id != Guid.Empty)
                 throw new Exception("UserID must be empty");
+
+            Validator.ValidateObject(userViewModel, new ValidationContext(userViewModel), true);
 
             User _user = mapper.Map<User>(userViewModel);
 
